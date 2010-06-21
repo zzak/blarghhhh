@@ -1,0 +1,31 @@
+<div id="comment-form">
+  <h3>leave a comment</h3>
+
+  <% form_for(@comment) do |f| %>
+    <%= f.error_messages %>
+
+    <p>
+      <%= f.text_field :name %> <%= f.label :name %>
+    </p>
+    <p>
+      <%= f.text_field :homepage, :value=>'http://' %> <%= f.label :homepage %>
+    </p>
+    <p>
+      <%= textile_editor 'comment', 'body' %>
+    </p>
+    <p>
+      <%= hidden_field_tag 'comment[post_id]', @post.id %>
+    </p>
+    
+    <div id="recaptcha">
+      <p>This is to protect against spammers and robots..</p>
+      <%= recaptcha_tags :public_key => '6LcMfgoAAAAAAOHnvnKOAs6TbOSSvQum7Hcj4hjE' %>
+    </div>
+      
+    <p>
+      <%= f.submit "comment" %>
+    </p>
+    
+    <%= textile_editor_initialize -%>
+  <% end %>
+</div>

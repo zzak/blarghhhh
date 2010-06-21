@@ -1,0 +1,16 @@
+<div id="post">
+  <h1><%=h @post.title %></h1>
+  <p class="post-date">created <%= time_ago_in_words(@post.created_at) %> ago 
+      under <%= link_to @post.category.name, :controller=>'categories', :action=>'show', :id=>@post.category.name %> | 
+      <%= link_to @post.comments.count.to_s + ' comments', :controller=>'posts', :action=>'show', :id=>@post, :anchor=>'comments' %></p>
+ 
+  <div id="post-body">
+    <%= @post.body %>
+  </div>
+
+  <%= render :partial => 'comments/new' %>
+
+  <a name="comments"></a>
+  <%= render :partial => 'comments/show' %>
+
+</div>

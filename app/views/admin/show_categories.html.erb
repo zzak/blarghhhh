@@ -1,0 +1,18 @@
+<h1>Listing categories</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+
+<% for category in @categories %>
+  <tr>
+    <td><%=h category.name %></td>
+    <td><%= link_to 'Show', :action=>'show_category', :id=>category.id %></td>
+    <td><%= link_to 'Edit', :action=>'edit_category', :id=>category.id %></td>
+    <td><%= link_to 'Destroy', :action=>'destroy_category', :id=>category.id %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'New Category', :action=>'new_category' %>

@@ -1,0 +1,15 @@
+<div id="comments">
+  <h3>comments</h3>
+
+  <% for comment in @post.comments %>
+    <a name="<%= comment.id %>"></a>
+    <div class="comment">
+      <div class="comment-author">
+        <p><%= link_to comment.name, comment.homepage %> said <%= time_ago_in_words(comment.created_at) %> ago</p>
+      </div>
+      <div class="comment-body">  
+        <%= comment.body %>
+      </div>
+    </div>
+  <% end %>
+</div>

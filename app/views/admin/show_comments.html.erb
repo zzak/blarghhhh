@@ -1,0 +1,22 @@
+<h1>Listing comments</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Homepage</th>
+    <th>Body</th>
+  </tr>
+
+<% for comment in @comments %>
+  <a name="<%= comment.id %>"></a>
+  <tr>
+    <td><%=h comment.name %></td>
+    <td><%=h comment.homepage %></td>
+    <td><%= comment.body %></td>
+    <td><%= link_to 'Show', :action=>'show_comment', :id=>comment.id %></td>
+    <td><%= link_to 'Edit', :action=>'edit_comment', :id=>comment.id %></td>
+    <td><%= link_to 'Destroy', :action=>'destroy_comment', :id=>comment.id %></td>
+  </tr>
+<% end %>
+</table>
+

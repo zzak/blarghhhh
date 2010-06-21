@@ -1,0 +1,20 @@
+<h1>Listing posts</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Category</th>
+  </tr>
+
+<% for post in @posts %>
+  <tr>
+    <td><%=h post.title %></td>
+    <td><%=h post.category.name %></td>
+    <td><%= link_to 'Show', :controller=>'admin', :action=>'show_post', :id=>post.id %></td>
+    <td><%= link_to 'Edit', :controller=>'admin', :action=>'edit_post', :id=>post.id %></td>
+    <td><%= link_to 'Destroy', :controller=>'admin', :action=>'destroy_post', :id=>post.id %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'New Post', :controller=>'admin', :action=>'new_post' %></td>

@@ -1,0 +1,22 @@
+<p>
+  <b>Name:</b>
+  <%=h @category.name %>
+</p>
+
+<h1>Listing posts</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Body</th>
+  </tr>
+
+<% for post in @category.posts %>
+  <tr>
+    <td><%=h post.title %></td>
+    <td><%= link_to 'Show', :action=>'show_post', :id=>post.id %></td>
+    <td><%= link_to 'Edit', :action=>'edit_post', :id=>post.id %></td>
+    <td><%= link_to 'Destroy', :action=>'destroy_post', :id=>post.id %></td>
+  </tr>
+<% end %>
+</table>

@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>blarghhhh</title>
+  <%= stylesheet_link_tag 'blarghhhh' %>
+  
+  <%= auto_discovery_link_tag :rss, :controller=>'posts', :format => 'rss' %>
+  
+  <%= javascript_include_tag 'prototype' %>
+  
+  <%= javascript_include_tag 'sh_main.min.js' %>
+  <%= stylesheet_link_tag 'sh_style.min.css' %>
+  <%= javascript_include_tag 'lang/sh_ruby.min.js' %>
+  <%= javascript_include_tag 'lang/sh_css.min.js' %>
+  <%= javascript_include_tag 'lang/sh_html.min.js' %>
+  <%= javascript_include_tag 'lang/sh_php.min.js' %>
+  <%= javascript_include_tag 'lang/sh_javascript.min.js' %>
+  <%= javascript_include_tag 'lang/sh_javascript_dom.min.js' %>
+  <%= javascript_include_tag 'lang/sh_perl.min.js' %>
+  <%= javascript_include_tag 'lang/sh_python.min.js' %>
+  <%= javascript_include_tag 'lang/sh_sh.min.js' %>
+  <%= javascript_include_tag 'lang/sh_sql.min.js' %>
+  <%= javascript_include_tag 'lang/sh_xml.min.js' %>
+</head>
+<body onload="sh_highlightDocument();">
+
+<div id="notices">
+  <p><%= flash[:notice] %></p>
+</div>
+
+<div id="page">
+  <div id="sidebar">
+    <%= render :partial => 'layouts/sidebar' %>
+  </div>
+  <div id="content">
+    <%= yield  %>
+  </div>
+</div>
+
+</body>
+</html>

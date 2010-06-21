@@ -1,0 +1,13 @@
+<h1>New category</h1>
+
+<% form_for(@category, :url=>{:controller=>'admin', :action=>'create_category'}) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
