@@ -2,7 +2,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.xml
   def create
-    verify_recaptcha :private_key => '6LcMfgoAAAAAAMNWI7G9vc-1nG6wNyqr7p9XSmi6'
+    verify_recaptcha :private_key => 'YOUR KEY HERE'
   
     @comment = Comment.new(params[:comment])
     @post = @comment.post
