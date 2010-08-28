@@ -1,8 +1,14 @@
 <html>
 <head><title><%= @info["repository"]["name"] %></title></head>
 <body>
+  <%= erb(:header, :layout=>false) %>
+
   <% @blobs["blobs"].each_pair do |key, value| %>
     <a href="/show/<%= key %>/<%= value %>"><%= key %></a><br />
   <% end %>
+  
+  <%= erb(:sidebar, :layout=>false) %>
+  
+  <%= erb(:footer, :layout=>false) %>
 </body>
 </html>

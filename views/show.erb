@@ -1,6 +1,12 @@
 <html>
 <head><title><%= @info["repository"]["name"] %></title></head>
 <body>
+  <%= erb(:header, :layout=>false) %>
+  
   <%= @post %>
+  
+  <%= erb(:sidebar, :layout=>false) %>
+  
+  <%= erb(:footer, :layout=>false) %>
 </body>
 </html>

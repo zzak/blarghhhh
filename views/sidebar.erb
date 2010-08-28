@@ -1,0 +1,9 @@
+<h1><a href="<%= @info["repository"]["homepage"] %>"><%= @info["repository"]["name"] %></a></h1>
+<h2><%= @info["repository"]["description"] %></h2>
+
+Collaborators:
+<% @collaborators.each_pair do |key, value| %>
+  <a href="http://github.com/<%= value %>"><%= value %></a><br />
+<% end %>
+
+<a href="<%= @info["repository"]["url"] %>"><%= @info["repository"]["watchers"] %> readers</a><br />
