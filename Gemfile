@@ -1,3 +1,4 @@
+gem "haml", :git => "http://github.com/nex3/haml.git"
 gem "crack", :git => "http://github.com/jnunemaker/crack.git"
 gem "httparty", :git => "http://github.com/jnunemaker/httparty.git"
 gem "rack", :git => "http://github.com/rack/rack.git"

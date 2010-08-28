@@ -1,12 +1,17 @@
 <html>
-<head><title><%= @info["repository"]["name"] %></title></head>
+<head>
+  <title><%= @info["repository"]["name"] %></title>
+  <link rel="stylesheet" href="/stylesheet.css" type="text/css" />
+</head>
 <body>
-  <%= erb(:header, :layout=>false) %>
-  
-  <%= @post %>
-  
-  <%= erb(:sidebar, :layout=>false) %>
-  
+  <div id="content">
+    <div id="main">
+      <%= @post %>
+    </div>
+    <div id="sidebar">
+      <%= erb(:sidebar, :layout=>false) %>
+    </div>
+  </div>
   <%= erb(:footer, :layout=>false) %>
 </body>
 </html>

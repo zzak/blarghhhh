@@ -2,6 +2,7 @@ require "rubygems"
 require "bundler"
 Bundler.setup
 
+require "haml"
 require "httparty"
 require "sinatra"
 require "erb"
@@ -29,4 +30,8 @@ get '/show/:post/:sha' do
   erb :show
 end
 
+get '/stylesheet.css' do
+  content_type 'text/css', :charset => 'utf-8'
+  sass :stylesheet
+end
 

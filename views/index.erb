@@ -1,14 +1,19 @@
 <html>
-<head><title><%= @info["repository"]["name"] %></title></head>
+<head>
+  <title><%= @info["repository"]["name"] %></title>
+  <link rel="stylesheet" href="/stylesheet.css" type="text/css" />
+</head>
 <body>
-  <%= erb(:header, :layout=>false) %>
-
-  <% @blobs["blobs"].each_pair do |key, value| %>
-    <a href="/show/<%= key %>/<%= value %>"><%= key %></a><br />
-  <% end %>
-  
-  <%= erb(:sidebar, :layout=>false) %>
-  
+  <div id="content">
+    <div id="main">
+      <% @blobs["blobs"].each_pair do |key, value| %>
+        <a href="/show/<%= key %>/<%= value %>"><%= key %></a><br />
+      <% end %>
+    </div>
+    <div id="sidebar"> 
+      <%= erb(:sidebar, :layout=>false) %>
+    </div>
+  </div>
   <%= erb(:footer, :layout=>false) %>
 </body>
 </html>
