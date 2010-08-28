@@ -1,0 +1,8 @@
+<html>
+<head><title><%= @info["repository"]["name"] %></title></head>
+<body>
+  <% @blobs["blobs"].each do |blob| %>
+    <%= blob %>
+  <% end %>
+</body>
+</html>
