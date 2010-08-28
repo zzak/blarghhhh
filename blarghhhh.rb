@@ -5,6 +5,7 @@ Bundler.setup
 require "httparty"
 require "sinatra"
 require "erb"
+require "rdiscount"
 
 base_uri = 'http://github.com/api/v2/json/'
 userid = 'zacharyscott'
@@ -18,7 +19,8 @@ end
 
 get '/show/:post/:sha' do
 	@info = HTTParty.get("#{base_uri}repos/show/#{userid}/#{repoid}")
-  @post = HTTParty.get("#{base_uri}blob/show/#{userid}/#{repoid}/#{params[:sha]}")
+  doc = HTTParty.get("#{base_uri}blob/show/#{userid}/#{repoid}/#{params[:sha]}").to_s
+  @post = RDiscount.new(doc).to_html
   erb :show
 end
 
