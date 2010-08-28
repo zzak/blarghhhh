@@ -1,8 +1,8 @@
 <html>
 <head><title><%= @info["repository"]["name"] %></title></head>
 <body>
-  <% @blobs["blobs"].each do |blob| %>
-    <%= blob %>
+  <% @blobs["blobs"].each_pair do |key, value| %>
+    <a href="/show/<%= key %>/<%= value %>"><%= key %></a><br />
   <% end %>
 </body>
 </html>

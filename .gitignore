@@ -1,4 +1,1 @@
-config/database.yml
-log/*
-tmp/*
-db/*
+Gemfile.lock

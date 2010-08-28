@@ -16,4 +16,10 @@ get '/' do
   erb :index
 end
 
+get '/show/:post/:sha' do
+	@info = HTTParty.get("#{base_uri}repos/show/#{userid}/#{repoid}")
+  @post = HTTParty.get("#{base_uri}blob/show/#{userid}/#{repoid}/#{params[:sha]}")
+  erb :show
+end
+
 
