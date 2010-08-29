@@ -6,6 +6,14 @@
 <body>
   <div id="content">
     <div id="main">
+      <% if false %>
+        <% @history["commit"]["modified"].each do |file| %>
+          <p class="commit_modified_filename"><%= file["filename"] %></p>
+        <% end %>
+        <p id="author_name">By <%= @current["commit"]["author"]["name"] %></p>
+        <p id="authored_date">on <%= @current["commit"]["authored_date"].strftime("%A %B %d %Y at %I:%M%p") %></p>
+        <p id="commit_message"><%= @current["commit"]["message"] %></p>
+      <% end %>
       <%= @post %>
     </div>
     <div id="sidebar">
