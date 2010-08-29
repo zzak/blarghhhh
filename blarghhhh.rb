@@ -9,25 +9,26 @@ require "erb"
 require "rdiscount"
 require "builder"
 
-base_uri = 'http://github.com/api/v2/json/'
+base_uri = 'http://github.com/api/v2/json'
 userid = 'zacharyscott'
 repoid = 'my_blarghhhh'
 
 
 get '/' do
-  @info = HTTParty.get("#{base_uri}repos/show/#{userid}/#{repoid}")
-  @collaborators = HTTParty.get("#{base_uri}repos/show/#{userid}/#{repoid}/collaborators")
-  @blobs = HTTParty.get("#{base_uri}blob/all/#{userid}/#{repoid}/master")
+  @hist_uri = base_uri + "/commits/list/" + userid + "/" + repoid + "/master"
+  @info = HTTParty.get("#{base_uri}/repos/show/#{userid}/#{repoid}")
+  @collaborators = HTTParty.get("#{base_uri}/repos/show/#{userid}/#{repoid}/collaborators")
+  @blobs = HTTParty.get("#{base_uri}/blob/all/#{userid}/#{repoid}/master")
   erb :index
 end
 
 get '/show/:post/:sha' do
-  @info = HTTParty.get("#{base_uri}repos/show/#{userid}/#{repoid}")
-  @collaborators = HTTParty.get("#{base_uri}repos/show/#{userid}/#{repoid}/collaborators")
-  doc = HTTParty.get("#{base_uri}blob/show/#{userid}/#{repoid}/#{params[:sha]}").to_s
+  @info = HTTParty.get("#{base_uri}/repos/show/#{userid}/#{repoid}")
+  @collaborators = HTTParty.get("#{base_uri}/repos/show/#{userid}/#{repoid}/collaborators")
+  doc = HTTParty.get("#{base_uri}/blob/show/#{userid}/#{repoid}/#{params[:sha]}").to_s
   @post = RDiscount.new(doc).to_html
   
-  @history = HTTParty.get("#{base_uri}commits/list/#{userid}/#{repoid}/master/#{params[:post]}").to_hash
+  @history = HTTParty.get("#{base_uri}/commits/list/#{userid}/#{repoid}/master/#{params[:post]}").to_hash
   erb :show
 end
 
@@ -37,8 +38,8 @@ get '/stylesheet.css' do
 end
 
 get '/rss.xml' do
-  @info = HTTParty.get("#{base_uri}repos/show/#{userid}/#{repoid}")
-  @blobs = HTTParty.get("#{base_uri}blob/all/#{userid}/#{repoid}/master")
+  @info = HTTParty.get("#{base_uri}/repos/show/#{userid}/#{repoid}")
+  @blobs = HTTParty.get("#{base_uri}/blob/all/#{userid}/#{repoid}/master")
   
   builder do |xml|
     xml.instruct! :xml, :version => '1.0'
