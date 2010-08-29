@@ -6,20 +6,35 @@
 <body>
   <div id="content">
     <div id="main">
-      <% if false %>
-        <% @history["commit"]["modified"].each do |file| %>
-          <p class="commit_modified_filename"><%= file["filename"] %></p>
-        <% end %>
-        <p id="author_name">By <%= @current["commit"]["author"]["name"] %></p>
-        <p id="authored_date">on <%= @current["commit"]["authored_date"].strftime("%A %B %d %Y at %I:%M%p") %></p>
-        <p id="commit_message"><%= @current["commit"]["message"] %></p>
-      <% end %>
-      <%= @post %>
+      <div id="post_info">
+        <h2>Author</h2>
+          <p id="author_name">By 
+            <a href="http://github.com/<%= @history["commits"][0]["author"]["login"] %>">
+            <%= @history["commits"][0]["author"]["name"] %>
+          </a></p>
+        <h2>Last Update</h2>
+          <p id="authored_date"><%= @history["commits"][0]["authored_date"].strftime("%A %B %d %Y at %I:%M%p") %></p>
+        <h2 id="history_button">History</h2>
+          <div id="history">
+            <% @history["commits"].each do |commit| %>
+              <div class="commit">
+                <p class="commit_message"><%= commit["message"] %></p>
+                <p class="commit_date"><%= commit["authored_date"].strftime("%A %B %d %Y at %I:%M%p") %></p>
+              </div>
+            <% end %>
+          </div>
+      </div>
+      <div id="post">
+        <%= @post %>
+      </div>
     </div>
     <div id="sidebar">
       <%= erb(:sidebar, :layout=>false) %>
     </div>
   </div>
   <%= erb(:footer, :layout=>false) %>
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script src="/javascripts/application.js" type="text/javascript"></script>
 </body>
 </html>

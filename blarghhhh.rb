@@ -26,10 +26,8 @@ get '/show/:post/:sha' do
   @collaborators = HTTParty.get("#{base_uri}repos/show/#{userid}/#{repoid}/collaborators")
   doc = HTTParty.get("#{base_uri}blob/show/#{userid}/#{repoid}/#{params[:sha]}").to_s
   @post = RDiscount.new(doc).to_html
-  # commit api acting strangely here..
-  #@current = HTTParty.get("#{base_uri}commits/show/#{userid}/#{repoid}/master/#{params[:post]}")
-  #commit_id = @current["commit"]["parents"][0]["id"]
-  #@history = HTTParty.get("#{base_uri}commits/show/#{userid}/#{repoid}/#{commit_id}")
+  
+  @history = HTTParty.get("#{base_uri}commits/list/#{userid}/#{repoid}/master/#{params[:post]}").to_hash
   erb :show
 end
 
@@ -51,6 +49,7 @@ get '/rss.xml' do
         xml.link @info["repository"]["homepage"]
         
         @blobs["blobs"].each_pair do |key, value|
+          
           xml.item do
             xml.title key
             xml.link "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"            
