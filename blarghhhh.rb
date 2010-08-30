@@ -65,7 +65,7 @@ get '/rss.xml' do
             xml.title key
             xml.link "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"            
             xml.guid "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"
-					  xml.pubDate Time.parse("#{hist["commits"][0]["authored_date"]}".to_s).rfc822()	
+            xml.pubDate Time.parse("#{hist["commits"][0]["authored_date"]}".to_s).rfc822()	
           end
         end
       end
