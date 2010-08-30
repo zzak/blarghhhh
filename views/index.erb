@@ -7,9 +7,7 @@
   <div id="content">
     <div id="main">
       <% @blobs["blobs"].each_pair do |key, value| %>
-        <% hist = HTTParty.get("#{@hist_uri}/#{key}").to_hash %>
         <h1 class="post_title"><a href="/show/<%= key %>/<%= value %>"><%= key %></a></h1>
-        <p class="post_date">Last updated <%= hist["commits"][0]["authored_date"].strftime("%A %B %d %Y at %I:%M%p") %></p>
       <% end %>
     </div>
     <div id="sidebar"> 
