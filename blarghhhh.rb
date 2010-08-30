@@ -50,11 +50,13 @@ get '/rss.xml' do
         xml.link @info["repository"]["homepage"]
         
         @blobs["blobs"].each_pair do |key, value|
+					hist = HTTParty.get("#{base_uri}/commits/list/#{userid}/#{repoid}/master/#{key}").to_hash
           
           xml.item do
             xml.title key
             xml.link "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"            
             xml.guid "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"
+					  xml.pubDate Time.parse("#{hist["commits"][0]["authored_date"]}".to_s).rfc822()	
           end
         end
       end
