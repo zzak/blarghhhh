@@ -2,49 +2,56 @@ require "rubygems"
 require "bundler"
 Bundler.setup
 
-require "haml"
+require "sass"
 require "httparty"
 require "sinatra/base"
 require "erb"
 require "rdiscount"
 require "builder"
-require "dalli"
+require "sinatra-sindalli"
 
 class Blarghhhh < Sinatra::Base
-
+  register Sinatra::Sindalli
+  
   set :base_uri, 'http://github.com/api/v2/json'
   set :userid, 'zacharyscott'
   set :repoid, 'my_blarghhhh'
 
 
   get '/' do
-    @dc = Dalli::Client.new('localhost:11211')
-    @dc.set('info', HTTParty.get(
-      "#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}"))
-    @info = @dc.get('info')	
-    @dc.set('collaborators', HTTParty.get(
-      "#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators"))
-    @collaborators = @dc.get('collaborators')	
-    @dc.set('blobs', HTTParty.get(
-      "#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master"))
-    @blobs = @dc.get('blobs')	
+    @info = settings.dc.fetch("info-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
+    end
+    
+    @collaborators = settings.dc.fetch("collaborators-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
+    end
+    
+    @blobs = settings.dc.fetch("blobs-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
+    end	
+    
     erb :index
   end
 
   get '/show/:post/:sha' do
-    @dc = Dalli::Client.new('localhost:11211')
-    @dc.set('info', HTTParty.get(
-      "#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}"))
-    @info = @dc.get('info')	
-    @dc.set('collaborators', HTTParty.get(
-      "#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators"))
-    @collaborators = @dc.get('collaborators')	
-    @dc.set(params[:sha], HTTParty.get(
-      "#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s)
-    @post = RDiscount.new(@dc.get(params[:sha])).to_html
-    @dc.set('history', HTTParty.get(
-      "#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash)
-    @history = @dc.get('history') 
+    @info = settings.dc.fetch("info-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
+    end
+    
+    @collaborators = settings.dc.fetch("collaborators-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
+    end
+    
+    settings.dc.fetch("#{params[:sha]}-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
+    end
+    @post = RDiscount.new(settings.dc.get("#{params[:sha]}-#{settings.repoid}")).to_html
+    
+    @history = settings.dc.fetch("history-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
+    end
+    
     erb :show
   end
 
@@ -54,13 +61,14 @@ class Blarghhhh < Sinatra::Base
   end
 
   get '/rss' do
-    @dc = Dalli::Client.new('localhost:11211')
-    @dc.set('info', HTTParty.get(
-      "#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}"))
-    @info = @dc.get('info')
-    @dc.set('blobs', HTTParty.get(
-      "#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master"))
-    @blobs = @dc.get('blobs')
+    @info = settings.dc.fetch("info-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
+    end
+    
+    @blobs = settings.dc.fetch("blobs-#{settings.repoid}") do
+      HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
+    end
+    
     builder do |xml|
       xml.instruct! :xml, :version => '1.0'
       xml.rss :version => "2.0" do
@@ -70,9 +78,9 @@ class Blarghhhh < Sinatra::Base
           xml.link @info["repository"]["homepage"]
           
           @blobs["blobs"].each_pair do |key, value|
-            @dc.set("hist-#{value}", HTTParty.get(
+            settings.dc.set("hist-#{value}", HTTParty.get(
               "#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{key}").to_hash)
-            hist = @dc.get("hist-#{value}") 
+            hist = settings.dc.get("hist-#{value}") 
             xml.item do
               xml.title key
               xml.link "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"            
