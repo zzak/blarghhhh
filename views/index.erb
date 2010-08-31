@@ -4,6 +4,9 @@
   <link rel="stylesheet" href="/stylesheet.css" type="text/css" />
 </head>
 <body>
+  <div id="header">
+    <%= erb(:header, :layout=>false) %>
+  </div>
   <div id="content">
     <div id="main">
       <% @blobs["blobs"].each_pair do |key, value| %>
