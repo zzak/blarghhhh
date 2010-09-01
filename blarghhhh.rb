@@ -8,26 +8,27 @@ require "sinatra/base"
 require "erb"
 require "rdiscount"
 require "builder"
-require "sinatra-sindalli"
+require "lib/sinatra-sindalli"
 
 class Blarghhhh < Sinatra::Base
-  register Sinatra::Sindalli
+  register Sinatra::SinDalli
   
   set :base_uri, 'http://github.com/api/v2/json'
   set :userid, 'zacharyscott'
   set :repoid, 'my_blarghhhh'
-
+  
+  #set :cache, Sinatra::SinDalli.new('override')
 
   get '/' do
-    @info = settings.dc.fetch("info-#{settings.repoid}") do
+    @info = settings.cache.fetch("info-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
-    @collaborators = settings.dc.fetch("collaborators-#{settings.repoid}") do
+    @collaborators = settings.cache.fetch("collaborators-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
     end
     
-    @blobs = settings.dc.fetch("blobs-#{settings.repoid}") do
+    @blobs = settings.cache.fetch("blobs-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
     end	
     
@@ -35,20 +36,20 @@ class Blarghhhh < Sinatra::Base
   end
 
   get '/show/:post/:sha' do
-    @info = settings.dc.fetch("info-#{settings.repoid}") do
+    @info = settings.cache.fetch("info-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
-    @collaborators = settings.dc.fetch("collaborators-#{settings.repoid}") do
+    @collaborators = settings.cache.fetch("collaborators-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
     end
     
-    settings.dc.fetch("#{params[:sha]}-#{settings.repoid}") do
+    settings.cache.fetch("#{params[:sha]}-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
     end
-    @post = RDiscount.new(settings.dc.get("#{params[:sha]}-#{settings.repoid}")).to_html
+    @post = RDiscount.new(settings.cache.get("#{params[:sha]}-#{settings.repoid}")).to_html
     
-    @history = settings.dc.fetch("history-#{settings.repoid}") do
+    @history = settings.cache.fetch("history-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
     end
     
@@ -61,11 +62,11 @@ class Blarghhhh < Sinatra::Base
   end
 
   get '/rss' do
-    @info = settings.dc.fetch("info-#{settings.repoid}") do
+    @info = settings.cache.fetch("info-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
-    @blobs = settings.dc.fetch("blobs-#{settings.repoid}") do
+    @blobs = settings.cache.fetch("blobs-#{settings.repoid}") do
       HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
     end
     
@@ -78,9 +79,9 @@ class Blarghhhh < Sinatra::Base
           xml.link @info["repository"]["homepage"]
           
           @blobs["blobs"].each_pair do |key, value|
-            settings.dc.set("hist-#{value}", HTTParty.get(
+            settings.cache.set("hist-#{value}", HTTParty.get(
               "#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{key}").to_hash)
-            hist = settings.dc.get("hist-#{value}") 
+            hist = settings.cache.get("hist-#{value}") 
             xml.item do
               xml.title key
               xml.link "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"            
