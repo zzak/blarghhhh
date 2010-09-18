@@ -19,7 +19,7 @@ class Blarghhhh < Sinatra::Base
   
   set :public, File.dirname(__FILE__) + '/public'
 
-  set :cache, Dalli.new
+  set :cache, Dalli::Client.new
 
   get '/' do
     @info = settings.cache.fetch("info-#{settings.repoid}") do
