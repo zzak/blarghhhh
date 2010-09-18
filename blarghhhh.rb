@@ -8,10 +8,10 @@ require "sinatra/base"
 require "erb"
 require "rdiscount"
 require "builder"
-require "sinatra-sindalli"
+require "dalli"
 
 class Blarghhhh < Sinatra::Base
-  register Sinatra::SinDalli
+#  register Sinatra::SinDalli
   
   set :base_uri, 'http://github.com/api/v2/json'
   set :userid, 'zacharyscott'
@@ -19,7 +19,7 @@ class Blarghhhh < Sinatra::Base
   
   set :public, File.dirname(__FILE__) + '/public'
 
-  #set :cache, Sinatra::SinDalli.new('override')
+  set :cache, Dalli.new
 
   get '/' do
     @info = settings.cache.fetch("info-#{settings.repoid}") do
