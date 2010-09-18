@@ -8,7 +8,7 @@ require "sinatra/base"
 require "erb"
 require "rdiscount"
 require "builder"
-require "lib/sinatra-sindalli"
+require "sinatra-sindalli"
 
 class Blarghhhh < Sinatra::Base
   register Sinatra::SinDalli
