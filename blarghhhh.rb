@@ -17,6 +17,8 @@ class Blarghhhh < Sinatra::Base
   set :userid, 'zacharyscott'
   set :repoid, 'my_blarghhhh'
   
+  set :public, File.dirname(__FILE__) + '/public'
+
   #set :cache, Sinatra::SinDalli.new('override')
 
   get '/' do
@@ -95,4 +97,3 @@ class Blarghhhh < Sinatra::Base
   end
 
 end
-
