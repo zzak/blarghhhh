@@ -86,8 +86,8 @@ class Blarghhhh < Sinatra::Base
             hist = settings.cache.get("hist-#{value}") 
             xml.item do
               xml.title key
-              xml.link "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"            
-              xml.guid "#{@info["repository"]["homepage"]}/show/#{key}/#{value}"
+              xml.link "#{@info["repository"]["homepage"]}show/#{key}/#{value}"            
+              xml.guid "#{@info["repository"]["homepage"]}show/#{key}/#{value}"
               xml.pubDate Time.parse("#{hist["commits"][0]["authored_date"]}".to_s).rfc822()	
             end
           end
