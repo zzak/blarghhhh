@@ -1,17 +1,17 @@
 #post_info
   %h2 Author
-    %p#author_name
-      By
-      %a{:href=>"http://github.com/#{@history["commits"][0]["author"]["login"]}"}
-        = @history["commits"][0]["author"]["name"]
+  %p#author_name
+    By
+    %a{:href=>"http://github.com/#{@history["commits"][0]["author"]["login"]}"}
+      = @history["commits"][0]["author"]["name"]
   %h2 Last Update
-    %p#authored_date
-      = @history["commits"][0]["authored_date"].strftime("%A %B %d %Y at %I:%M%p")
+  %p#authored_date
+    = @history["commits"][0]["authored_date"].strftime("%A %B %d %Y at %I:%M%p")
   %h2#history_button History
-    #history
-      - @history["commits"].each do |commit|
-        .commit
-          %p.commit_message= commit["message"]
-          %p.commit_date= commit["authored_date"].strftime("%A %B %d %Y at %I:%M%p")
+  #history
+    - @history["commits"].each do |commit|
+      .commit
+        %p.commit_message= commit["message"]
+        %p.commit_date= commit["authored_date"].strftime("%A %B %d %Y at %I:%M%p")
 #post
   = @post
