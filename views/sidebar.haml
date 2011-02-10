@@ -1,0 +1,11 @@
+%h2 Collaborators
+%ul#collaborators
+  - @collaborators.each_pair do |key, value|
+    %li
+      %a{:href=>"http://github.com/#{value}"}
+        = value
+#watchers
+  %p
+    %a{:href=>"#{@info["repository"]["url"]}/watchers"}
+      = "#{@info["repository"]["watchers"]} watchers"
+  <p>Watch this repository <br />  on github</p>

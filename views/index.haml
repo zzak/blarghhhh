@@ -1,0 +1,4 @@
+- @branches["branches"].each_pair do |key, value|
+  %h1{:class=>"post_title"}
+    %a{:href=>"/b/#{key}"}
+      = key
