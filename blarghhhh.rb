@@ -22,7 +22,7 @@ class Blarghhhh < Sinatra::Base
   set :cache, Dalli::Client.new
 
   get '/' do
-    @info = settings.cache.fetch("info-#{settings.repoid}") do
+    @info = settings.cache.fetch("info-#{settings.repoid}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
@@ -30,7 +30,7 @@ class Blarghhhh < Sinatra::Base
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
     end
     
-    @blobs = settings.cache.fetch("blobs-#{settings.repoid}") do
+    @blobs = settings.cache.fetch("blobs-#{settings.repoid}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
     end	
     
@@ -38,7 +38,7 @@ class Blarghhhh < Sinatra::Base
   end
 
   get '/show/:post/:sha' do
-    @info = settings.cache.fetch("info-#{settings.repoid}") do
+    @info = settings.cache.fetch("info-#{settings.repoid}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
@@ -46,12 +46,12 @@ class Blarghhhh < Sinatra::Base
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
     end
     
-    settings.cache.fetch("#{params[:sha]}-#{settings.repoid}") do
+    settings.cache.fetch("#{params[:sha]}-#{settings.repoid}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
     end
     @post = RDiscount.new(settings.cache.get("#{params[:sha]}-#{settings.repoid}")).to_html
     
-    @history = settings.cache.fetch("history-#{settings.repoid}") do
+    @history = settings.cache.fetch("history-#{settings.repoid}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
     end
     
@@ -64,11 +64,11 @@ class Blarghhhh < Sinatra::Base
   end
 
   get '/rss' do
-    @info = settings.cache.fetch("info-#{settings.repoid}") do
+    @info = settings.cache.fetch("info-#{settings.repoid}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
-    @blobs = settings.cache.fetch("blobs-#{settings.repoid}") do
+    @blobs = settings.cache.fetch("blobs-#{settings.repoid}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
     end
     
