@@ -8,7 +8,6 @@ require "httparty"
 require "sinatra/base"
 require "rdiscount"
 require "dalli"
-require "yaml"
 
 class Blarghhhh < Sinatra::Base
 
