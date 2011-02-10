@@ -12,11 +12,10 @@ require "dalli"
 require "yaml"
 
 class Blarghhhh < Sinatra::Base
-  conf = YAML::load(File.open("#{File.dirname(__FILE__)}/repo.yml"))
 
   set :base_uri, 'http://github.com/api/v2/json'
-  set :userid, conf['user'] 
-  set :repoid, conf['repo'] 
+  set :userid, ENV['GITHUB_USER'] 
+  set :repoid, ENV['GITHUB_REPO'] 
   
   set :public, File.dirname(__FILE__) + '/public'
 
