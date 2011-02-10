@@ -28,15 +28,31 @@ class Blarghhhh < Sinatra::Base
     @collaborators = settings.cache.fetch("collaborators") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
     end
-    
-    @blobs = settings.cache.fetch("blobs") do
-      HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
-    end	
+
+    @branches = settings.cache.fetch("branches") do
+      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/branches")
+    end
     
     erb :index
   end
 
-  get '/show/:post/:sha' do
+  get '/b/:branch' do
+    @info = settings.cache.fetch("info") do
+      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
+    end
+     
+    @collaborators = settings.cache.fetch("collaborators") do
+      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
+    end
+     
+    @blobs = settings.cache.fetch("#{params[:branch]}-blobs") do
+      HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/#{params[:branch]}")
+    end	
+
+    erb :branch
+  end
+
+  get '/show/:branch/:post/:sha' do
     @info = settings.cache.fetch("info") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
@@ -51,7 +67,7 @@ class Blarghhhh < Sinatra::Base
     @post = RDiscount.new(markdown).to_html
     
     @history = settings.cache.fetch("#{params[:sha]}-history") do
-      HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
+      HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/#{params[:branch]}/#{params[:post]}").to_hash
     end
     
     erb :show
