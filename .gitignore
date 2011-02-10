@@ -1,3 +1,4 @@
-*.swp
 .bundle/environment.rb
+*.swp
 .sass-cache/
+repo.yml

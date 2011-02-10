@@ -9,13 +9,14 @@ require "erb"
 require "rdiscount"
 require "builder"
 require "dalli"
+require "yaml"
 
 class Blarghhhh < Sinatra::Base
-#  register Sinatra::SinDalli
-  
+  conf = YAML::load(File.open("#{File.dirname(__FILE__)}/repo.yml"))
+
   set :base_uri, 'http://github.com/api/v2/json'
-  set :userid, 'zacharyscott'
-  set :repoid, 'my_blarghhhh'
+  set :userid, conf['user'] 
+  set :repoid, conf['repo'] 
   
   set :public, File.dirname(__FILE__) + '/public'
 
