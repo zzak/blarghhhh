@@ -1,91 +1,28 @@
---- 
-dependencies: 
-  httparty: 
-    group: 
-    - :default
-    version: ">= 0"
-  haml: 
-    group: 
-    - :default
-    version: ">= 0"
-  dalli: 
-    group: 
-    - :default
-    version: ">= 0"
-  crack: 
-    group: 
-    - :default
-    version: ">= 0"
-  rack: 
-    group: 
-    - :default
-    version: ">= 0"
-  sinatra: 
-    group: 
-    - :default
-    version: ">= 0"
-  rdiscount: 
-    group: 
-    - :default
-    version: ">= 0"
-  builder: 
-    group: 
-    - :default
-    version: ">= 0"
-  sinatra-sindalli: 
-    group: 
-    - :default
-    version: ">= 0"
-specs: 
-- builder: 
-    version: 2.1.2
-- crack: 
-    version: 0.1.8
-    source: 4
-- dalli: 
-    version: 0.9.7
-    source: 0
-- haml: 
-    version: 3.1.0
-    source: 5
-- httparty: 
-    version: 0.6.1
-    source: 3
-- rack: 
-    version: 1.2.1
-- rdiscount: 
-    version: 1.6.5
-    source: 1
-- sinatra: 
-    version: "1.0"
-    source: 2
-- sinatra-sindalli: 
-    version: 0.0.2
-hash: ae4fc8e382c4f4af527faac5b2aa473e0dd61d57
-sources: 
-- Git: 
-    uri: http://github.com/mperham/dalli.git
-    git: http://github.com/mperham/dalli.git
-    ref: 08e3208d43adae8481965e0689c510167a903915
-- Git: 
-    uri: http://github.com/rtomayko/rdiscount.git
-    git: http://github.com/rtomayko/rdiscount.git
-    ref: 2023146355cfaf7fdd16ca008aceff0b250a9626
-- Git: 
-    uri: http://github.com/sinatra/sinatra.git
-    git: http://github.com/sinatra/sinatra.git
-    ref: 1187a866346e82c98b8ad545b8f155632f7d9283
-- Git: 
-    uri: http://github.com/jnunemaker/httparty.git
-    git: http://github.com/jnunemaker/httparty.git
-    ref: 582e36b27fa0721c55fb79066caf4c9cdb298b1e
-- Git: 
-    uri: http://github.com/jnunemaker/crack.git
-    git: http://github.com/jnunemaker/crack.git
-    ref: 1f3495c1205c134509dba0be3b570ee8adbefe83
-- Git: 
-    uri: http://github.com/nex3/haml.git
-    git: http://github.com/nex3/haml.git
-    ref: 57ffc2b108e27ed35c216e7a2a03e54b8c019f04
-- Rubygems: 
-    uri: http://rubygems.org/
+GEM
+  remote: http://rubygems.org/
+  specs:
+    builder (3.0.0)
+    crack (0.1.8)
+    dalli (1.0.2)
+    haml (3.0.25)
+    httparty (0.7.3)
+      crack (= 0.1.8)
+    rack (1.2.1)
+    rdiscount (1.6.8)
+    sinatra (1.1.2)
+      rack (~> 1.1)
+      tilt (~> 1.2)
+    tilt (1.2.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  builder
+  crack
+  dalli
+  haml
+  httparty
+  rack
+  rdiscount
+  sinatra
