@@ -14,23 +14,23 @@ require "yaml"
 class Blarghhhh < Sinatra::Base
 
   set :base_uri, 'http://github.com/api/v2/json'
-  set :userid, ENV['GITHUB_USER'] 
-  set :repoid, ENV['GITHUB_REPO'] 
+  set :userid, ENV['GITHUB_USER']
+  set :repoid, ENV['GITHUB_REPO']
   
   set :public, File.dirname(__FILE__) + '/public'
 
-  set :cache, Dalli::Client.new
+  set :cache, Dalli::Client.new(ENV['MEMCACHE_SERVERS'], :username => ENV['MEMCACHE_USERNAME'], :password => ENV['MEMCACHE_PASSWORD'])
 
   get '/' do
-    @info = settings.cache.fetch("info-#{settings.repoid}", :ttl => 300) do
+    @info = settings.cache.fetch("info", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
-    @collaborators = settings.cache.fetch("collaborators-#{settings.repoid}") do
+    @collaborators = settings.cache.fetch("collaborators") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
     end
     
-    @blobs = settings.cache.fetch("blobs-#{settings.repoid}", :ttl => 300) do
+    @blobs = settings.cache.fetch("blobs", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
     end	
     
@@ -38,20 +38,20 @@ class Blarghhhh < Sinatra::Base
   end
 
   get '/show/:post/:sha' do
-    @info = settings.cache.fetch("info-#{settings.repoid}", :ttl => 300) do
+    @info = settings.cache.fetch("info", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
-    @collaborators = settings.cache.fetch("collaborators-#{settings.repoid}") do
+    @collaborators = settings.cache.fetch("collaborators") do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
     end
     
-    settings.cache.fetch("#{params[:sha]}-#{settings.repoid}", :ttl => 300) do
+    settings.cache.fetch("#{params[:sha]}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
     end
-    @post = RDiscount.new(settings.cache.get("#{params[:sha]}-#{settings.repoid}")).to_html
+    @post = RDiscount.new(settings.cache.get("#{params[:sha]}")).to_html
     
-    @history = settings.cache.fetch("history-#{settings.repoid}", :ttl => 300) do
+    @history = settings.cache.fetch("#{params[:sha]}-history", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
     end
     
@@ -64,11 +64,11 @@ class Blarghhhh < Sinatra::Base
   end
 
   get '/rss' do
-    @info = settings.cache.fetch("info-#{settings.repoid}", :ttl => 300) do
+    @info = settings.cache.fetch("info", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
     end
     
-    @blobs = settings.cache.fetch("blobs-#{settings.repoid}", :ttl => 300) do
+    @blobs = settings.cache.fetch("blobs", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
     end
     
