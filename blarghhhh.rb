@@ -7,7 +7,6 @@ require "httparty"
 require "sinatra/base"
 require "erb"
 require "rdiscount"
-require "builder"
 require "dalli"
 require "yaml"
 
@@ -61,39 +60,6 @@ class Blarghhhh < Sinatra::Base
   get '/stylesheet.css' do
     content_type 'text/css', :charset => 'utf-8'
     sass :stylesheet
-  end
-
-  get '/rss' do
-    @info = settings.cache.fetch("info") do
-      HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
-    end
-    
-    @blobs = settings.cache.fetch("blobs") do
-      HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
-    end
-    
-    builder do |xml|
-      xml.instruct! :xml, :version => '1.0'
-      xml.rss :version => "2.0" do
-        xml.channel do
-          xml.title @info["repository"]["name"]
-          xml.description @info["repository"]["description"]
-          xml.link @info["repository"]["homepage"]
-          
-          @blobs["blobs"].each_pair do |key, value|
-            settings.cache.set("hist-#{value}", HTTParty.get(
-              "#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{key}").to_hash)
-            hist = settings.cache.get("hist-#{value}") 
-            xml.item do
-              xml.title key
-              xml.link "#{@info["repository"]["homepage"]}show/#{key}/#{value}"            
-              xml.guid "#{@info["repository"]["homepage"]}show/#{key}/#{value}"
-              xml.pubDate Time.parse("#{hist["commits"][0]["authored_date"]}".to_s).rfc822()	
-            end
-          end
-        end
-      end
-    end
   end
 
 end

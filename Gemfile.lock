@@ -1,7 +1,6 @@
 GEM
   remote: http://rubygems.org/
   specs:
-    builder (3.0.0)
     crack (0.1.8)
     dalli (1.0.2)
     haml (3.0.25)
@@ -18,7 +17,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  builder
   crack
   dalli
   haml
