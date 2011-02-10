@@ -46,10 +46,10 @@ class Blarghhhh < Sinatra::Base
       HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}/collaborators")
     end
     
-    settings.cache.fetch("#{params[:sha]}", :ttl => 300) do
+    markdown = settings.cache.fetch("#{params[:sha]}", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
     end
-    @post = RDiscount.new(settings.cache.get("#{params[:sha]}")).to_html
+    @post = RDiscount.new(markdown).to_html
     
     @history = settings.cache.fetch("#{params[:sha]}-history", :ttl => 300) do
       HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
