@@ -1,6 +1,7 @@
 %h2 Collaborators
 %ul#collaborators
-  - @collaborators.each_pair do |key, value|
+  - @collaborators.each do |c|
     %li
-      %a{:href=>"http://github.com/#{value}"}
-        = value
+      %img{:src=>"http://www.gravatar.com/avatar/#{c.gravatar_id}"}
+      %a{:href=>"http://github.com/#{c.login}"}
+        = c.name 
