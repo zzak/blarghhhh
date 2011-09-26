@@ -1,11 +1,4 @@
 require "rubygems"
-require "bundler"
-Bundler.setup
-
-require 'sinatra'
-
-disable :run, :reload
-
-require 'blarghhhh.rb'
-
-run Blarghhhh
+require "bundler/setup"
+require "#{File.dirname(__FILE__)}/blarghhhh"
+run Sinatra::Application 
