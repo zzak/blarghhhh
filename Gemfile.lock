@@ -2,11 +2,12 @@ GEM
   remote: http://rubygems.org/
   specs:
     crack (0.1.8)
-    dalli (1.0.2)
     haml (3.0.25)
     httparty (0.7.3)
       crack (= 0.1.8)
     rack (1.2.1)
+    rack-cache (1.1)
+      rack (>= 0.4)
     rdiscount (1.6.8)
     sinatra (1.1.2)
       rack (~> 1.1)
@@ -18,9 +19,8 @@ PLATFORMS
 
 DEPENDENCIES
   crack
-  dalli
   haml
   httparty
-  rack
+  rack-cache
   rdiscount
   sinatra

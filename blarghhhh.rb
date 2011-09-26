@@ -3,49 +3,39 @@ require "sass"
 require "httparty"
 require "sinatra"
 require "rdiscount"
-require "dalli"
 
 set :base_uri, 'http://github.com/api/v2/json'
-set :userid, 'zzak'
-set :repoid, 'blog.zacharyscott.net'
-#set :userid, ENV['GITHUB_USER']
-#set :repoid, ENV['GITHUB_REPO']
+set :userid, ENV['GITHUB_USER']
+set :repoid, ENV['GITHUB_REPO']
 set :public, File.dirname(__FILE__) + '/public'
-set :cache, Dalli::Client.new(
-    ENV['MEMCACHE_SERVERS'], 
-    :username => ENV['MEMCACHE_USERNAME'], 
-    :password => ENV['MEMCACHE_PASSWORD'], 
-    :expires_in => 300)
-
 set :views, File.dirname(__FILE__)
 
+configure :production do
+  sha1, date = `git log HEAD~1..HEAD --pretty=format:%h^%ci`.strip.split('^')
+
+  require 'rack/cache'
+  use Rack::Cache
+
+  before do
+    cache_control :public, :must_revalidate, :max_age=>300
+    etag sha1
+    last_modified date
+  end
+end
+
 get '/' do
-  @info = settings.cache.fetch("info") do
-    HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
-  end
-  @user = settings.cache.fetch("user") do
-    HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
-  end
-  @blobs = settings.cache.fetch("blobs") do
-    HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
-  end
+  @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
+  @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
+  @blobs = HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
   haml :index
 end
 
 get '/show/:post/:sha' do
-  @info = settings.cache.fetch("info") do
-    HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
-  end
-  @user = settings.cache.fetch("user") do
-    HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
-  end
-  markdown = settings.cache.fetch("#{params[:sha]}") do
-    HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
-  end
+  @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
+  @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
+  markdown = HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
   @post = RDiscount.new(markdown).to_html
-  @history = settings.cache.fetch("#{params[:sha]}-history") do
-    HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
-  end
+  @history = HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
   haml :show
 end
 
