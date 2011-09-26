@@ -6,8 +6,10 @@ require "rdiscount"
 require "dalli"
 
 set :base_uri, 'http://github.com/api/v2/json'
-set :userid, ENV['GITHUB_USER']
-set :repoid, ENV['GITHUB_REPO']
+set :userid, 'zzak'
+set :repoid, 'blog.zacharyscott.net'
+#set :userid, ENV['GITHUB_USER']
+#set :repoid, ENV['GITHUB_REPO']
 set :public, File.dirname(__FILE__) + '/public'
 set :cache, Dalli::Client.new(
     ENV['MEMCACHE_SERVERS'], 
@@ -15,7 +17,6 @@ set :cache, Dalli::Client.new(
     :password => ENV['MEMCACHE_PASSWORD'], 
     :expires_in => 300)
 
-set :markdown, :layout_engine => :haml
 set :views, File.dirname(__FILE__)
 
 get '/' do
@@ -83,7 +84,7 @@ __END__
 %ul#blog_stats
   %li
     %a{:href=>"https://github.com/#{settings.userid}/#{settings.repoid}/commits/master.atom"}
-      %img{:src=>"/images/rss.png"}
+      %img{:src=>"/images/rss2.png"}
   %li
     %a{:href=>"https://github.com/#{settings.userid}/#{settings.repoid}/watchers"}
       = @info["repository"]["watchers"]
@@ -112,15 +113,20 @@ __END__
 %h1#username
   = @user["user"]["name"]
   %a{:href=>"http://github.com/#{settings.userid}/followers"}
-    %sup= @user["user"]["followers_count"]
-%h2#location= @user["user"]["location"]
+    %sup
+      = @user["user"]["followers_count"]
+      %img{:src=>"/images/watchers.png"}
 %ul#user_stats
   %li
-    %a{:href=>@user["user"]["blog"]} home
+    %a{:href=>@user["user"]["blog"]}
+      %img{:src=>"/images/home.png"}
   %li
-    %a{:href=>"http://github.com/#{@user["user"]["login"]}"} code
+    %a{:href=>"http://github.com/#{@user["user"]["login"]}"}
+      %img{:src=>"/images/code.png"}
   %li
-    %a{:href=>"mailto:#{@user["user"]["email"]}"} email
+    %a{:href=>"mailto:#{@user["user"]["email"]}"}
+      %img{:src=>"/images/mail.png"}
+%h2#location= @user["user"]["location"]
 
 @@show
 #post_info
@@ -210,10 +216,12 @@ h1 a, h2 a
   #user_stats
     text-align: right 
     li
-      float: left
-      margin-left: 10px
+      float: right
+      margin-right: 10px
   #avatar
     float: left
+  #location
+    clear: both
 
 .page_header
   margin: 20px
