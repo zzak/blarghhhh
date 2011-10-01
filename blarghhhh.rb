@@ -35,7 +35,7 @@ helpers do
   def syntax_highlighter html
     doc = Nokogiri::HTML(html) 
     doc.search("//pre[@lang]").each do |pre|  
-      pre.replace Albino.colorize(pre.text.rstrip, pre[:lang])
+      pre.replace colorize(pre.text.rstrip, pre[:lang])
     end 
     doc.search('pre').each do |pre|
       pre.children.each do |c|
@@ -50,6 +50,20 @@ helpers do
     end 
     doc.to_s 
   end
+
+  def colorize(code, lang)
+    if(can_pygmentize)
+      Albino.colorize(code, lang)
+    else
+      Net::HTTP.post_form(URI.parse('http://pygments.appspot.com/'),
+                          {'code'=>code, 'lang'=>lang}).body
+    end
+  end
+
+  def can_pygmentize
+    system 'pygmentize -V'
+  end
+
 end
 
 get '/' do
