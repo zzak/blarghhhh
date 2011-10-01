@@ -145,8 +145,8 @@ __END__
   outline: 0 
 
 body
-  color: #EEEEEE
-  background-color: #2F2F2F 
+  color: #2F2F2F
+  background-color: #FFFFFF
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Garuda" 
 
 a:link, a:visited 
