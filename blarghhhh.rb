@@ -2,7 +2,9 @@ require "haml"
 require "sass"
 require "httparty"
 require "sinatra"
-require "rdiscount"
+require "redcarpet"
+require "albino"
+require "nokogiri"
 
 set :base_uri, 'http://github.com/api/v2/json'
 set :userid, ENV['GITHUB_USER']
@@ -23,6 +25,33 @@ configure :production do
   end
 end
 
+helpers do
+  def markdown text
+   options = [:filter_html, :autolink,
+      :no_intraemphasis, :fenced_code, :gh_blockcode]  
+    syntax_highlighter(Redcarpet.new(text, *options).to_html)
+  end 
+  
+  def syntax_highlighter html
+    doc = Nokogiri::HTML(html) 
+    doc.search("//pre[@lang]").each do |pre|  
+      pre.replace Albino.colorize(pre.text.rstrip, pre[:lang])
+    end 
+    doc.search('pre').each do |pre|
+      pre.children.each do |c|
+        c.parent = pre.parent
+      end
+      pre.remove 
+    end 
+    doc.search('div').each do |div|
+      if div['class'] == 'highlight'
+       div.replace(Nokogiri.make("<pre>#{div.to_html}</pre>"))
+      end
+    end 
+    doc.to_s 
+  end
+end
+
 get '/' do
   @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
   @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
@@ -33,8 +62,8 @@ end
 get '/show/:post/:sha' do
   @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
   @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
-  markdown = HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
-  @post = RDiscount.new(markdown).to_html
+  md = HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
+  @post = markdown(md)
   @history = HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
   haml :show
 end
@@ -54,6 +83,7 @@ __END__
     %title
       = "#{@info["repository"]["name"]} | #{@info["repository"]["description"]}"
     %link{:rel=>"stylesheet", :href=>"/stylesheet.css", :type=>"text/css"}
+    %link{:rel=>"stylesheet", :href=>"/css/pygments.css", :type=>"text/css"}
   %body
     #header
       = haml(:header, :layout=>false)
@@ -246,9 +276,10 @@ h1 a, h2 a
     line-height: 1.3em
     margin: 10px 0px
   pre
-    background: #3F3F3F
     overflow: auto
     overflow-Y: hidden
+    margin-left: -60px
+    font-size: 1.1em
 
 #history_button
   cursor: pointer
