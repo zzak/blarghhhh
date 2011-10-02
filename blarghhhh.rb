@@ -83,8 +83,7 @@ get '/' do
 end
 
 get '/show/:post' do
-  md = HTTParty.get("https://raw.github.com/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_s
-  @post = markdown(md)
+  @post = markdown(HTTParty.get("https://raw.github.com/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_s)
   @history = HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
   haml :show
 end
