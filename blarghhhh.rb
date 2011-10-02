@@ -75,10 +75,10 @@ get '/' do
   haml :index
 end
 
-get '/show/:post/:sha' do
+get '/show/:post' do
   @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
   @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
-  md = HTTParty.get("#{settings.base_uri}/blob/show/#{settings.userid}/#{settings.repoid}/#{params[:sha]}").to_s
+  md = HTTParty.get("https://raw.github.com/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_s
   @post = markdown(md)
   @history = HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
   haml :show
@@ -119,7 +119,7 @@ __END__
 @@index
 - @blobs["blobs"].each_pair do |key, value|
   %h1{:class=>"post_title"}
-    %a{:href=>"/show/#{key}/#{value}"}= key
+    %a{:href=>"/show/#{key}"}= key
 
 @@header
 %ul#blog_stats
