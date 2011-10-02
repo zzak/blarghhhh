@@ -7,8 +7,10 @@ require "albino"
 require "nokogiri"
 
 set :base_uri, 'http://github.com/api/v2/json'
-set :userid, ENV['GITHUB_USER']
-set :repoid, ENV['GITHUB_REPO']
+set :ga_id, ENV['GA_ID'] || 'UA-26071793-1'
+set :ga_domain, ENV['GA_DOMAIN'] || 'blog.zacharyscott.net'
+set :userid, ENV['GITHUB_USER'] || 'zzak'
+set :repoid, ENV['GITHUB_REPO'] || 'blog.zacharyscott.net'
 set :public, File.dirname(__FILE__) + '/public'
 set :views, File.dirname(__FILE__)
 
@@ -80,6 +82,10 @@ get '/show/:post/:sha' do
   @post = markdown(md)
   @history = HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
   haml :show
+end
+
+get '/ga.js' do
+  haml :ga, :layout => false
 end
 
 get '/stylesheet.css' do
@@ -181,6 +187,19 @@ __END__
         %p.commit_date= commit["authored_date"].strftime("%A %B %d %Y at %I:%M%p")
 #post
   = @post
+
+@@ga
+:javascript
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', '#{settings.ga_id}']);
+  _gaq.push(['_setDomainName', '#{settings.ga_domain}']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
 
 @@stylesheet
 * 
