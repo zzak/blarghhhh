@@ -72,16 +72,17 @@ helpers do
 
 end
 
-get '/' do
+before do
   @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
   @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
+end
+
+get '/' do
   @blobs = HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")["blobs"].map{|b|b[0]}.sort
   haml :index
 end
 
 get '/show/:post' do
-  @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
-  @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
   md = HTTParty.get("https://raw.github.com/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_s
   @post = markdown(md)
   @history = HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
