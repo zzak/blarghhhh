@@ -98,6 +98,7 @@ __END__
       = "#{@info["repository"]["name"]} | #{@info["repository"]["description"]}"
     %link{:rel=>"stylesheet", :href=>"/stylesheet.css", :type=>"text/css"}
     %link{:rel=>"stylesheet", :href=>"/css/pygments.css", :type=>"text/css"}
+    %script{:type=>"text/javascript", :src=>"/ga.js"}
   %body
     #header
       = haml(:header, :layout=>false)
