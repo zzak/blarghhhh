@@ -150,7 +150,6 @@ __END__
     blarghhhh
 
 @@sidebar
-%img#avatar{:src=>"http://www.gravatar.com/avatar/#{@user["user"]["gravatar_id"]}"}
 %h1#username
   = @user["user"]["name"]
   %a{:href=>"http://github.com/#{settings.userid}/followers"}
@@ -159,15 +158,21 @@ __END__
       %img{:src=>"/images/watchers.png"}
 %ul#user_stats
   %li
-    %a{:href=>@user["user"]["blog"]}
-      %img{:src=>"/images/home.png"}
+    %a{:href=>"mailto:#{@user["user"]["email"]}"}
+      mail  
+      %br 
+      %img{:src=>"/images/mail.png"}
   %li
     %a{:href=>"http://github.com/#{@user["user"]["login"]}"}
+      code  
+      %br 
       %img{:src=>"/images/code.png"}
   %li
-    %a{:href=>"mailto:#{@user["user"]["email"]}"}
-      %img{:src=>"/images/mail.png"}
-%h2#location= @user["user"]["location"]
+    %a{:href=>@user["user"]["blog"]}
+      home  
+      %br 
+      %img{:src=>"/images/home.png"}
+%img#avatar{:src=>"http://www.gravatar.com/avatar/#{@user["user"]["gravatar_id"]}"}
 
 @@show
 #post_info
@@ -209,12 +214,13 @@ __END__
   outline: 0 
 
 body
-  color: #2F2F2F
+  color: #000
   background-color: #FFFFFF
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Garuda" 
 
 a:link, a:visited 
-  color: #5F5F5F
+  color: #000
+  text-shadow: #2F2F2F 1px 1px 1px !important
 
 a:hover, a:active 
   color: #8F8F8F
@@ -262,18 +268,22 @@ h1 a, h2 a
       font-size: .8em
   h2 
     font-size: 1em
-    color: #4F4F4F
     text-align: right  
   ul 
     list-style-type: none
     margin-left: 20px
   #user_stats
-    text-align: right 
+    text-align: center
+    line-height: 1em
+    clear: both
+    a
+      text-decoration: none
     li
       float: right
       margin-right: 10px
   #avatar
-    float: left
+    clear: both
+    text-align: right
   #location
     clear: both
 
@@ -330,8 +340,4 @@ h1 a, h2 a
   clear: both
   text-align: center
   font-size: .8em 
-  a:link, a:visited 
-    color: #9F9F9F
-  a:hover, a:active 
-    color: #EEE
  
