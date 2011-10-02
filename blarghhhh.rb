@@ -28,6 +28,10 @@ configure :production do
 end
 
 helpers do
+  def escape_uri text
+    return text.gsub('_',' ').gsub('.md', '')
+  end
+
   def markdown text
    options = [:filter_html, :autolink,
       :no_intraemphasis, :fenced_code, :gh_blockcode]  
@@ -71,7 +75,7 @@ end
 get '/' do
   @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
   @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
-  @blobs = HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")
+  @blobs = HTTParty.get("#{settings.base_uri}/blob/all/#{settings.userid}/#{settings.repoid}/master")["blobs"].map{|b|b[0]}.sort
   haml :index
 end
 
@@ -117,9 +121,9 @@ __END__
     
 
 @@index
-- @blobs["blobs"].each_pair do |key, value|
+- @blobs.each do |b|
   %h1{:class=>"post_title"}
-    %a{:href=>"/show/#{key}"}= key
+    %a{:href=>"/show/#{b}"}= escape_uri b
 
 @@header
 %ul#blog_stats
