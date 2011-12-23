@@ -225,8 +225,7 @@ body
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Garuda" 
 
 a:link, a:visited 
-  color: #000
-  text-shadow: #2F2F2F 1px 1px 1px !important
+  color: #3F3F3F
 
 a:hover, a:active 
   color: #8F8F8F
@@ -297,18 +296,13 @@ h1 a, h2 a
   margin: 20px
 
 .posts
-  width: 500px
-
-.posts li
-  width: 200px
-  float: left
-
-.posts h1
-  font-size: 1em
-
-.post_title
-  line-height: 30px
-  margin-bottom: 25px
+  li
+    width: 210px
+    float: left
+    margin: 10px
+    list-style-type: none
+  h1
+    font-size: 1em
 
 #post_info
   float: right
