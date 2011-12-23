@@ -225,7 +225,7 @@ body
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Garuda" 
 
 a:link, a:visited 
-  color: #3F3F3F
+  color: #000000
 
 a:hover, a:active 
   color: #8F8F8F
@@ -309,16 +309,16 @@ h1 a, h2 a
 #post_info
   float: right
   width: 25%
-  background: #3F3F3F
+  background: #000000
   padding: 20px
-  color: #EEEEEE
+  color: #FFFFFF
   a:link, a:visited
-    color: #EEE
+    color: #FFFFFF
   a:hover, a:active
-    color: FFF
+    color: #8F8F8F
   h2
     text-align: right
-    color: #2F2F2F
+    color: #8F8F8F
   #authored_date
     font-size: 14px
 
@@ -346,7 +346,7 @@ h1 a, h2 a
     margin-bottom: 10px
   .commit_date
     font-size: 12px
-    color: #5F5F5F
+    color: #9F9F9F
 
 #footer 
   clear: both
