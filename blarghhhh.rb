@@ -121,9 +121,11 @@ __END__
     
 
 @@index
-- @blobs.each do |b|
-  %h1{:class=>"post_title"}
-    %a{:href=>"/show/#{b}"}= escape_uri b
+%ul.posts
+  - @blobs.each do |b|
+    %li
+      %h1
+        %a{:href=>"/show/#{b}"}= escape_uri b
 
 @@header
 %ul#blog_stats
@@ -293,6 +295,16 @@ h1 a, h2 a
 
 .page_header
   margin: 20px
+
+.posts
+  width: 500px
+
+.posts li
+  width: 200px
+  float: left
+
+.posts h1
+  font-size: 1em
 
 .post_title
   line-height: 30px
