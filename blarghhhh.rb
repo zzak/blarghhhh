@@ -296,6 +296,8 @@ h1 a, h2 a
   margin: 20px
 
 .posts
+  width: 700px
+  margin: 0 auto
   li
     width: 210px
     float: left
