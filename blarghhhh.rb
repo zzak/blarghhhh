@@ -108,6 +108,7 @@ __END__
       = "#{@info["repository"]["name"]} | #{@info["repository"]["description"]}"
     %link{:rel=>"stylesheet", :href=>"/stylesheet.css", :type=>"text/css"}
     %link{:rel=>"stylesheet", :href=>"/css/pygments.css", :type=>"text/css"}
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://rss.zacharyscott.net/">
     %script{:type=>"text/javascript", :src=>"/ga.js"}
   %body
     #header
@@ -130,7 +131,7 @@ __END__
 @@header
 %ul#blog_stats
   %li
-    %a{:href=>"https://github.com/#{settings.userid}/#{settings.repoid}/commits/master.atom"}
+    %a{:href=>"http://rss.zacharyscott.net/"}
       %img{:src=>"/images/rss2.png"}
   %li
     %a{:href=>"https://github.com/#{settings.userid}/#{settings.repoid}/watchers"}
