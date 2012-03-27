@@ -52,6 +52,7 @@ end
 
 before do
   @info = HTTParty.get("#{settings.base_uri}/repos/show/#{settings.userid}/#{settings.repoid}")
+  @info["repository"]["homepage"].chomp!('/') if @info["repository"]["homepage"][-1,1] == '/'
   @user = HTTParty.get("#{settings.base_uri}/user/show/#{settings.userid}")
 end
 
@@ -127,10 +128,10 @@ xml.rss :version => "2.0" do
     @posts.each do |post|
       xml.item do
         xml.title post.title
-        xml.link "/show/#{post.file}"
+        xml.link "#{@info["repository"]["homepage"]}/show/#{post.file}"
         xml.description request_file(post.file)
         xml.pubDate Time.parse(post.created_at.to_s).rfc822()
-        xml.guid "/show/#{post.file}"
+        xml.guid "#{@info["repository"]["homepage"]}/show/#{post.file}"
       end
     end
   end
