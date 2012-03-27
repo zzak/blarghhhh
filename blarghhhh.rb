@@ -2,9 +2,7 @@ require "haml"
 require "sass"
 require "httparty"
 require "sinatra"
-require "redcarpet"
-require "albino"
-require "nokogiri"
+require "glorify"
 
 set :base_uri, 'http://github.com/api/v2/json'
 set :ga_id, ENV['GA_ID'] || 'UA-26071793-1'
@@ -31,45 +29,6 @@ helpers do
   def escape_uri text
     return text.gsub('_',' ').gsub('.md', '')
   end
-
-  def markdown text
-   options = [:filter_html, :autolink,
-      :no_intraemphasis, :fenced_code, :gh_blockcode]  
-    syntax_highlighter(Redcarpet.new(text, *options).to_html)
-  end 
-  
-  def syntax_highlighter html
-    doc = Nokogiri::HTML(html) 
-    doc.search("//pre[@lang]").each do |pre|  
-      pre.replace colorize(pre.text.rstrip, pre[:lang])
-    end 
-    doc.search('pre').each do |pre|
-      pre.children.each do |c|
-        c.parent = pre.parent
-      end
-      pre.remove 
-    end 
-    doc.search('div').each do |div|
-      if div['class'] == 'highlight'
-       div.replace(Nokogiri.make("<pre>#{div.to_html}</pre>"))
-      end
-    end 
-    doc.to_s 
-  end
-
-  def colorize(code, lang)
-    if(can_pygmentize)
-      Albino.colorize(code, lang)
-    else
-      Net::HTTP.post_form(URI.parse('http://pygments.appspot.com/'),
-                          {'code'=>code, 'lang'=>lang}).body
-    end
-  end
-
-  def can_pygmentize
-    system 'pygmentize -V'
-  end
-
 end
 
 before do
@@ -83,7 +42,7 @@ get '/' do
 end
 
 get '/show/:post' do
-  @post = markdown(HTTParty.get("https://raw.github.com/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_s)
+  @post = glorify(HTTParty.get("https://raw.github.com/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_s)
   @history = HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
   haml :show
 end
@@ -201,7 +160,6 @@ __END__
   = @post
 
 @@ga
-:javascript
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', '#{settings.ga_id}']);
   _gaq.push(['_setDomainName', '#{settings.ga_domain}']);
