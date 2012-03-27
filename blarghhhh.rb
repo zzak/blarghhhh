@@ -206,13 +206,13 @@ end
       = @history["commits"][0]["author"]["name"]
   %h2 Last Update
   %p#authored_date
-    = @history["commits"][0]["authored_date"].strftime("%A %B %d %Y at %I:%M%p")
+    = Date.parse(@history["commits"][0]["authored_date"]).strftime("%A %B %d %Y at %I:%M%p")
   %h2#history_button History
   #history
     - @history["commits"].each do |commit|
       .commit
         %p.commit_message= commit["message"]
-        %p.commit_date= commit["authored_date"].strftime("%A %B %d %Y at %I:%M%p")
+        %p.commit_date= Date.parse(commit["authored_date"]).strftime("%A %B %d %Y at %I:%M%p")
 #post
   = @post
 
