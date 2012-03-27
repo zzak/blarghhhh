@@ -12,7 +12,7 @@ set :ga_id, ENV['GA_ID'] || 'UA-26071793-1'
 set :ga_domain, ENV['GA_DOMAIN'] || 'blog.zacharyscott.net'
 set :userid, ENV['GITHUB_USER'] || 'zzak'
 set :repoid, ENV['GITHUB_REPO'] || 'blog.zacharyscott.net'
-set :public, File.dirname(__FILE__) + '/public'
+set :public_folder, File.dirname(__FILE__) + '/public'
 set :views, File.dirname(__FILE__)
 
 DataMapper.setup(:default, ENV['DATABASE_URL'])
