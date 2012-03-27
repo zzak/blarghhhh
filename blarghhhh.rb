@@ -1,8 +1,11 @@
-require "haml"
-require "sass"
-require "httparty"
-require "sinatra"
+require "builder"
+require "data_mapper"
 require "glorify"
+require "haml"
+require "httparty"
+require "json"
+require "sass"
+require "sinatra"
 
 set :base_uri, 'http://github.com/api/v2/json'
 set :ga_id, ENV['GA_ID'] || 'UA-26071793-1'
@@ -11,6 +14,18 @@ set :userid, ENV['GITHUB_USER'] || 'zzak'
 set :repoid, ENV['GITHUB_REPO'] || 'blog.zacharyscott.net'
 set :public, File.dirname(__FILE__) + '/public'
 set :views, File.dirname(__FILE__)
+
+DataMapper.setup(:default, ENV['DATABASE_URL'])
+class Post
+  include DataMapper::Resource
+  property :id,         Serial
+  property :title,      String
+  property :file,       String
+  property :created_at, DateTime
+  validates_uniqueness_of :file, :title
+end
+DataMapper.finalize
+Post.auto_upgrade!
 
 configure :production do
   sha1, date = `git log HEAD~1..HEAD --pretty=format:%h^%ci`.strip.split('^')
@@ -29,6 +44,10 @@ helpers do
   def escape_uri text
     return text.gsub('_',' ').gsub('.md', '')
   end
+
+  def request_file file
+    glorify(HTTParty.get("https://raw.github.com/#{settings.userid}/#{settings.repoid}/master/#{file}").to_s)
+  end
 end
 
 before do
@@ -45,6 +64,24 @@ get '/show/:post' do
   @post = glorify(HTTParty.get("https://raw.github.com/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_s)
   @history = HTTParty.get("#{settings.base_uri}/commits/list/#{settings.userid}/#{settings.repoid}/master/#{params[:post]}").to_hash
   haml :show
+end
+
+get '/feed' do
+  @posts = Post.all(:order => [:id.desc], :limit => 20)
+  builder :feed, :layout => false
+end
+
+post '/feed/:token' do
+  push = JSON.parse(params[:payload])
+  push['commits'].each do |commit|
+    if commit['added']
+      @post = Post.create(
+        :title => escape_uri(commit['added'].first),
+        :file => commit['added'].first,
+        :created_at => commit['timestamp']
+      ) if params[:token] == ENV['TOKEN']
+    end
+  end
 end
 
 get '/ga.js' do
@@ -67,7 +104,7 @@ __END__
       = "#{@info["repository"]["name"]} | #{@info["repository"]["description"]}"
     %link{:rel=>"stylesheet", :href=>"/stylesheet.css", :type=>"text/css"}
     %link{:rel=>"stylesheet", :href=>"/css/pygments.css", :type=>"text/css"}
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="http://rss.zacharyscott.net/">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed">
     %script{:type=>"text/javascript", :src=>"/ga.js"}
   %body
     #header
@@ -79,6 +116,25 @@ __END__
         = haml(:sidebar, :layout=>false)
     = haml(:footer, :layout=>false)
     
+@@feed
+xml.instruct! :xml, :version => '1.0'
+xml.rss :version => "2.0" do
+  xml.channel do
+    xml.title @info["repository"]["name"]
+    xml.description @info["repository"]["description"]
+    xml.link @info["repository"]["url"]
+
+    @posts.each do |post|
+      xml.item do
+        xml.title post.title
+        xml.link "/show/#{post.file}"
+        xml.description request_file(post.file)
+        xml.pubDate Time.parse(post.created_at.to_s).rfc822()
+        xml.guid "/show/#{post.file}"
+      end
+    end
+  end
+end
 
 @@index
 %ul.posts
@@ -90,7 +146,7 @@ __END__
 @@header
 %ul#blog_stats
   %li
-    %a{:href=>"http://rss.zacharyscott.net/"}
+    %a{:href=>"/feed"}
       %img{:src=>"/images/rss2.png"}
   %li
     %a{:href=>"https://github.com/#{settings.userid}/#{settings.repoid}/watchers"}

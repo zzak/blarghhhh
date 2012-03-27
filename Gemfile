@@ -1,8 +1,12 @@
 source :rubygems
 
-gem "haml"
+gem "builder"
 gem "crack"
-gem "httparty"
-gem "sinatra"
-gem "rack-cache"
+gem "data_mapper"
+gem "dm-postgres-adapter"
 gem "glorify"
+gem "haml"
+gem "httparty"
+gem "json"
+gem "rack-cache"
+gem "sinatra"
