@@ -74,7 +74,7 @@ end
 post '/feed/:token' do
   push = JSON.parse(params[:payload])
   push['commits'].each do |commit|
-    if commit['added']
+    if commit['added'] && !commit['added'].empty?
       @post = Post.create(
         :title => escape_uri(commit['added'].first),
         :file => commit['added'].first,
