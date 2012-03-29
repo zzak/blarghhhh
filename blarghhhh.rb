@@ -350,7 +350,6 @@ h1 a, h2 a
   pre
     overflow: auto
     overflow-Y: hidden
-    margin-left: -60px
     font-size: 1.1em
 
 #history_button
