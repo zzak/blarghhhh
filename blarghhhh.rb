@@ -214,7 +214,7 @@ end
         %p.commit_message= commit["message"]
         %p.commit_date= Date.parse(commit["authored_date"]).strftime("%A %B %d %Y at %I:%M%p")
 #post
-  = @post
+  ~ @post
 
 @@ga
   var _gaq = _gaq || [];
